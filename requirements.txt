@@ -1,0 +1,4 @@
+torch
+tensorly
+tensorly-torch
+jupyterlab
