@@ -65,4 +65,17 @@ class Trainer:
         for i, (batch, label) in enumerate(t):
             with torch.no_grad():
                 batch = batch.to(self.device)
-                # TODO: finish
+                output = self.model(Variable(batch))
+                loss = self.criterion(output, Variable(label, requires_grad=False)).cuda()
+                val_loss += loss.cpu().numpy()
+                pred = output.cpu().data.max(1)[1]
+                correct += pred.cpu().eq(label).sum()
+
+                steps += label.size(0)
+            
+        self.model.train()
+        accuracy = float(correct) / steps
+
+        return accuracy, val_loss / steps
+    
+    
