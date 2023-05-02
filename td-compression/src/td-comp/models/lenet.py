@@ -1,6 +1,9 @@
-'''LeNet in PyTorch.'''
 import torch.nn as nn
 import torch.nn.functional as F
+
+"""
+LeNet-5
+"""
 
 class LeNet(nn.Module):
     def __init__(self):

@@ -1,7 +1,9 @@
-'''VGG11/13/16/19 in Pytorch.'''
 import torch
 import torch.nn as nn
 
+"""
+VGG11/13/16/19 in Pytorch.
+"""
 
 cfg = {
     'VGG11': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
@@ -9,7 +11,6 @@ cfg = {
     'VGG16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
     'VGG19': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
 }
-
 
 class VGG(nn.Module):
     def __init__(self, vgg_name):
@@ -39,6 +40,6 @@ class VGG(nn.Module):
 
 def test():
     net = VGG('VGG11')
-    x = torch.randn(2,3,32,32)
+    x = torch.randn(1, 3, 32, 32)
     y = net(x)
     print(y.size())

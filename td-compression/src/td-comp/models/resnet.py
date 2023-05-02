@@ -3,6 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models import resnet18
 
+"""Reference:
+[1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+    Deep Residual Learning for Image Recognition. arXiv:1512.03385
+"""
 
 def get_resnet_from_torch(in_channels, num_classes, weights=None):
     model = resnet18(weights=weights)
