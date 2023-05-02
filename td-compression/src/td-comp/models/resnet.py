@@ -7,7 +7,6 @@ from torchvision.models import resnet18
 [1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
     Deep Residual Learning for Image Recognition. arXiv:1512.03385
 """
-
 def get_resnet_from_torch(in_channels, num_classes, weights=None):
     model = resnet18(weights=weights)
     model.conv1 = nn.Conv2d(
@@ -52,7 +51,6 @@ class BasicBlock(nn.Module):
         out = F.relu(out)
         return out
 
-
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -82,7 +80,6 @@ class Bottleneck(nn.Module):
         out += self.shortcut(x)
         out = F.relu(out)
         return out
-
 
 class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes=10):
@@ -117,13 +114,12 @@ class ResNet(nn.Module):
         out = self.linear(out)
         return out
 
-def ResNet18(num_classes=10, nc=3):
+def ResNet18(num_classes=10):
     """
     Default ResNet18 model for CIFAR10 dataset.
     Number of classes: 10 (CIFAR10)
-    Number of channels: 3 (RGB)
     """
-    return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, nc=nc)
+    return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
 
 def ResNet34():
     return ResNet(BasicBlock, [3, 4, 6, 3])

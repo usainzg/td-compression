@@ -2,3 +2,8 @@ torch
 tensorly
 tensorly-torch
 jupyterlab
+wandb
+numpy
+matplotlib
+scipy
+ipywidgets
