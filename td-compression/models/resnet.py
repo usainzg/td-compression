@@ -1,7 +1,25 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision.models import resnet18
 
+
+def get_resnet_from_torch(in_channels, num_classes, weights=None):
+    model = resnet18(weights=weights)
+    model.conv1 = nn.Conv2d(
+        in_channels=in_channels, 
+        out_channels=64,
+        kernel_size=(3,3),
+        stride=(1,1),
+        padding=(1,1),
+        bias=False,
+    )
+    model.fc = nn.Linear(
+        in_features=512,
+        out_features=num_classes,
+        bias=True,
+    )
+    return model
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -95,6 +113,22 @@ class ResNet(nn.Module):
         out = self.linear(out)
         return out
 
+def ResNet18(num_classes=10, nc=3):
+    """
+    Default ResNet18 model for CIFAR10 dataset.
+    Number of classes: 10 (CIFAR10)
+    Number of channels: 3 (RGB)
+    """
+    return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, nc=nc)
 
-def ResNet18():
-    return ResNet(BasicBlock, [2, 2, 2, 2])
+def ResNet34():
+    return ResNet(BasicBlock, [3, 4, 6, 3])
+
+def ResNet50():
+    return ResNet(Bottleneck, [3, 4, 6, 3])
+
+def ResNet101():
+    return ResNet(Bottleneck, [3, 4, 23, 3])
+
+def ResNet152():
+    return ResNet(Bottleneck, [3, 8, 36, 3])
