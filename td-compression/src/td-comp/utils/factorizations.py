@@ -23,9 +23,9 @@ def factorize_layer(
     elif type(module) == torch.nn.modules.linear.Linear:
         fact_module = tltorch.FactorizedLinear.from_linear(
             module,
-            # TODO: add get_prime_factors()
-            in_tensorized_features=get_prime_factors(module.in_features),
-            out_tensorized_features=get_prime_factors(module.out_features),
+            #in_tensorized_features=get_prime_factors(module.in_features),
+            #out_tensorized_features=get_prime_factors(module.out_features),
+            n_tensorized_modes=3,
             rank=rank,
             factorization=factorization,
             decompose_weights=decompose_weights,
