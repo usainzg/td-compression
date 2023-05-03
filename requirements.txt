@@ -3,6 +3,7 @@ torchvision
 tensorly
 tensorly-torch
 jupyterlab
+lightning
 wandb
 numpy
 matplotlib
