@@ -1,4 +1,5 @@
 torch
+torchvision
 tensorly
 tensorly-torch
 jupyterlab
