@@ -80,4 +80,6 @@ if __name__ == '__main__':
     trainer.fit(pl_module, data_dict['train'], data_dict['val'])
     # test
     trainer.test(pl_module, data_dict['test'])
+    # save model
+    trainer.save_checkpoint(os.path.join(args.out_dir, f'{log_name}.ckpt'))
 
