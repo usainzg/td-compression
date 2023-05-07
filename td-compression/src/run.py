@@ -1,6 +1,13 @@
 import argparse
+import time
+import os
+
+import lightning.pytorch as pl
+import lightning.pytorch.loggers as pl_loggers
+
 from models import resnet, vgg
-from utils import factorizations
+from utils import factorizations, data
+from modules import model_module
 
 
 POSSIBLE_MODELS = ['resnet18', 'resnet34', 'resnet50', 'vgg11', 'vgg16', 'vgg19']
@@ -41,7 +48,36 @@ def create_model(model_name, tn_decomp=None, tn_rank=None):
 
 
 if __name__ == '__main__':
+    # reproducibility
+    pl.seed_everything(42)
+    # parse args
     args = parse_args()
     print(args)
+    # create model
     model = create_model(args.model, args.tn_decomp, args.tn_rank)
-    print(model)
+    # init lightining module
+    pl_module = model_module.Model(model, init_lr=args.lr)
+    # get and prepare data
+    data_dict = data.prepare_data()
+    # wandb run name
+    if args.tn_decomp is not None:
+        log_name = f'{args.model}-{args.tn_decomp}-{args.tn_rank}-{time.time()}'
+    else:
+        log_name = f'{args.model}-{time.time()}'
+    # init loggers
+    wandb_logger = pl_loggers.WandbLogger(name=log_name, project="td-compression")
+    # create log dir if not exists
+    if not os.path.exists(args.log_dir):
+        os.makedirs(args.log_dir)
+    # init trainer
+    trainer = pl.Trainer(
+        accelerator=1,
+        max_epochs=args.epochs,
+        default_root_dir=args.log_dir,
+        logger=wandb_logger
+    )
+    # train
+    trainer.fit(pl_module, data_dict['train'], data_dict['val'])
+    # test
+    trainer.test(pl_module, data_dict['test'])
+

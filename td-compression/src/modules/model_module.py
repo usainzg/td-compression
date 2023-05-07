@@ -3,6 +3,7 @@ import torch.nn as nn
 import lightning.pytorch as pl
 from torchmetrics.functional import accuracy
 
+
 class Model(pl.LightningModule):
     def __init__(self, model, init_lr=1e-3):
         super().__init__()
