@@ -46,6 +46,8 @@ def factorize_layer(
 
 def factorize_network(
     model,
+    tn_decomp,
+    tn_rank,
     layers=[],
     exclude=[],
     verbose=False
