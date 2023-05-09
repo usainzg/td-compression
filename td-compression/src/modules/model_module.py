@@ -42,7 +42,7 @@ class Model(pl.LightningModule):
     def _get_preds_loss_accuracy(self, batch):
         '''convenience function since train/valid/test steps are similar'''
         x, y = batch
-        logits = self(x)
+        logits = self.model(x)
         preds = torch.argmax(logits, dim=1)
         loss = self.loss(logits, y)
         acc = accuracy(preds, y, 'multiclass', num_classes=10)
