@@ -13,12 +13,17 @@ def factorize_layer(
     module,
     factorization='tucker',
     rank=None,
-    decompose_weights=True,
-    vbmf=False
+    decompose_weights=False,
+    vbmf=False,
+    implementation='reconstructed'
 ):
-    init_std = not decompose_weights
+    init_std = None if decompose_weights else 0.01
     decomposition_kwargs = {'init': 'random'} if factorization == 'cp' else {}
     fixed_rank_modes = 'spatial' if factorization == 'tucker' else None
+    # implementation see: https://github.com/tensorly/torch/blob/d27d58f16101b7ecc431372eb218ceda59d8b043/tltorch/functional/convolution.py#L286
+    
+    if rank is None and vbmf == False and factorization != 'tucker':
+        raise ValueError('rank must be specified for non-tucker factorization')
     
     if decompose_weights:
         vbmf = False # VBMF is not needed if weights are decomposed
@@ -40,6 +45,7 @@ def factorize_layer(
             decompose_weights=decompose_weights,
             factorization=factorization,
             fixed_rank_modes=fixed_rank_modes,
+            implementation=implementation,
             decomposition_kwargs=decomposition_kwargs
         )
     elif type(module) == torch.nn.modules.linear.Linear:
@@ -56,6 +62,7 @@ def factorize_layer(
         raise NotImplementedError(type(module))
     
     if init_std:
+        print('Initializing with std')
         fact_module.weight.normal_(0, init_std)
     
     return fact_module
@@ -66,6 +73,7 @@ def factorize_network(
     tn_decomp,
     rank,
     decompose_weights,
+    implementation='reconstructed',
     layers=[],
     exclude=[],
     verbose=False
@@ -78,7 +86,13 @@ def factorize_network(
         for i, (name, module) in enumerate(model.named_modules()):
             if name in layer_names:
                 print(f'factorizing: {name}')
-                fact_module = factorize_layer(module=module, factorization=tn_decomp, rank=rank, decompose_weights=decompose_weights)
+                fact_module = factorize_layer(
+                    module=module, 
+                    factorization=tn_decomp, 
+                    rank=rank, 
+                    decompose_weights=decompose_weights,
+                    implementation=implementation
+                )
                 layer, block, conv = name.split('.')
                 conv_to_replace = getattr(getattr(fact_model, layer), block)
                 setattr(conv_to_replace, conv, fact_module)
@@ -91,7 +105,13 @@ def factorize_network(
                 if name == 'features.0':
                     continue # Skip first layer
                 print(f'factorizing: {name}')
-                fact_layer = factorize_layer(module=module, factorization=tn_decomp, rank=rank, decompose_weights=decompose_weights)
+                fact_layer = factorize_layer(
+                    module=module, 
+                    factorization=tn_decomp, 
+                    rank=rank, 
+                    decompose_weights=decompose_weights,
+                    implementation=implementation
+                )
                 layer, block = name.split('.')
                 conv_to_replace = getattr(fact_model, layer)
                 setattr(conv_to_replace, block, fact_layer)
