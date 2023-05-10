@@ -1,24 +1,42 @@
 from __future__ import division
+import copy
 import torch
 import tltorch
 import tensorly as tl
 import numpy as np
 from scipy.optimize import minimize_scalar
 
+from utils import factorizations
+
+
 def factorize_layer(
     module,
     factorization='tucker',
-    rank=0.5,
+    rank=None,
     decompose_weights=True,
-    init_std=None
+    vbmf=False
 ):
+    init_std = not decompose_weights
     decomposition_kwargs = {'init': 'random'} if factorization == 'cp' else {}
     fixed_rank_modes = 'spatial' if factorization == 'tucker' else None
+    
+    if decompose_weights:
+        vbmf = False # VBMF is not needed if weights are decomposed
 
     if type(module) == torch.nn.modules.conv.Conv2d:
+        # rank selection
+        if vbmf:
+            ranks = factorizations.estimate_ranks(module)
+        elif rank is not None:
+            ranks = rank
+        else:
+            weights = module.weight.data
+            ranks = [weights.shape[0]//3, weights.shape[1]//3, weights.shape[2], weights.shape[3]]
+        
+        # factorize from conv layer
         fact_module = tltorch.FactorizedConv.from_conv(
             module,
-            rank=rank,
+            rank=ranks,
             decompose_weights=decompose_weights,
             factorization=factorization,
             fixed_rank_modes=fixed_rank_modes,
@@ -27,8 +45,6 @@ def factorize_layer(
     elif type(module) == torch.nn.modules.linear.Linear:
         fact_module = tltorch.FactorizedLinear.from_linear(
             module,
-            #in_tensorized_features=get_prime_factors(module.in_features),
-            #out_tensorized_features=get_prime_factors(module.out_features),
             n_tensorized_modes=3,
             rank=rank,
             factorization=factorization,
@@ -45,11 +61,42 @@ def factorize_layer(
     return fact_module
 
 def factorize_network(
+    model_name,
     model,
     tn_decomp,
-    tn_rank,
+    rank,
+    decompose_weights,
     layers=[],
     exclude=[],
     verbose=False
 ):
-    return NotImplementedError
+    if model_name.starswith('resnet'):
+        # layers to tensorize
+        layer_names = ['layer1.0.conv1', 'layer1.0.conv2', 'layer1.1.conv1', 'layer1.1.conv2', 'layer2.0.conv1', 'layer2.0.conv2', 'layer2.1.conv1', 'layer2.1.conv2', 'layer3.0.conv1', 'layer3.0.conv2', 'layer3.1.conv1', 'layer3.1.conv2', 'layer4.0.conv1', 'layer4.0.conv2', 'layer4.1.conv1', 'layer4.1.conv2']
+        fact_model = copy.deepcopy(model)
+        # factorize resnet
+        for i, (name, module) in enumerate(model.named_modules()):
+            if name in layer_names:
+                print(f'factorizing: {name}')
+                fact_module = factorize_layer(module=module, factorization=tn_decomp, rank=rank, decompose_weights=decompose_weights)
+                layer, block, conv = name.split('.')
+                conv_to_replace = getattr(getattr(fact_model, layer), block)
+                setattr(conv_to_replace, conv, fact_module)
+    elif model_name.startswith('vgg'):
+        fact_model = copy.deepcopy(model)
+        # factorize vgg
+        for i, (name, module) in enumerate(model.named_modules()):
+            if type(module) == torch.nn.modules.conv.Conv2d:
+                if name == 'features.0':
+                    continue # Skip first layer
+                print(f'factorizing: {name}')
+                fact_layer = factorize_layer(module=module, factorization=tn_decomp, rank=rank, decompose_weights=decompose_weights)
+                layer, block = name.split('.')
+                conv_to_replace = getattr(fact_model, layer)
+                setattr(conv_to_replace, block, fact_layer)
+    else:
+        raise NotImplementedError(model_name)
+
+    return fact_model
+
+    
