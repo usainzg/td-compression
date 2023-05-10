@@ -7,7 +7,7 @@ import lightning.pytorch.loggers as pl_loggers
 import torch
 
 from models import resnet, vgg
-from utils import factorizations, data
+from utils import factorizations, data, utils
 from modules import model_module
 
 
@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument('--log-dir', type=str, default='logs', help='log directory')
     parser.add_argument('--out-dir', type=str, default='output', help='output directory')
     parser.add_argument('--tn-decomp', type=str, default=None, choices=TN_DECOMPOSITIONS, help='tensor decomposition')
-    parser.add_argument('--tn-rank', type=int, default=None, help='tensor rank')
+    parser.add_argument('--tn-rank', type=float, default=None, help='tensor rank')
     return parser.parse_args()
 
 def create_model(model_name, tn_decomp=None, tn_rank=None):
@@ -43,7 +43,13 @@ def create_model(model_name, tn_decomp=None, tn_rank=None):
         raise ValueError('Unknown model name: {}'.format(model_name))
     
     if tn_decomp is not None:
-        model = factorizations.factorize_network(model, tn_decomp, tn_rank)
+        model = factorizations.factorize_network(
+            model_name, 
+            model, 
+            tn_decomp, 
+            tn_rank,
+            decompose_weights=True
+        )
 
     return model
 
@@ -60,8 +66,10 @@ if __name__ == '__main__':
     # parse args
     args = parse_args()
     print(args)
-    # create model
+    # create model and count parameters
     model = create_model(args.model, args.tn_decomp, args.tn_rank)
+    n_params = utils.count_parameters(model)
+    print(f'Number of parameters: {n_params}')
     # init lightining module
     pl_module = model_module.Model(model, init_lr=args.lr)
     # get and prepare data
@@ -79,6 +87,17 @@ if __name__ == '__main__':
         log_name = f'{args.model}-{time.time()}'
     # init loggers
     wandb_logger = pl_loggers.WandbLogger(name=log_name, project="td-compression", save_dir=args.log_dir)
+    config = {
+        'model': args.model,
+        'batch_size': args.batch_size,
+        'epochs': args.epochs,
+        'lr': args.lr,
+        'tn_decomp': args.tn_decomp,
+        'tn_rank': args.tn_rank,
+        'n_params': n_params
+    }
+    # update run config
+    wandb_logger.experiment.config.update(config)
     # init trainer
     trainer = pl.Trainer(
         accelerator="gpu",

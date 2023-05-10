@@ -70,7 +70,7 @@ def factorize_network(
     exclude=[],
     verbose=False
 ):
-    if model_name.starswith('resnet'):
+    if model_name.startswith('resnet'):
         # layers to tensorize
         layer_names = ['layer1.0.conv1', 'layer1.0.conv2', 'layer1.1.conv1', 'layer1.1.conv2', 'layer2.0.conv1', 'layer2.0.conv2', 'layer2.1.conv1', 'layer2.1.conv2', 'layer3.0.conv1', 'layer3.0.conv2', 'layer3.1.conv1', 'layer3.1.conv2', 'layer4.0.conv1', 'layer4.0.conv2', 'layer4.1.conv1', 'layer4.1.conv2']
         fact_model = copy.deepcopy(model)
@@ -82,6 +82,7 @@ def factorize_network(
                 layer, block, conv = name.split('.')
                 conv_to_replace = getattr(getattr(fact_model, layer), block)
                 setattr(conv_to_replace, conv, fact_module)
+    
     elif model_name.startswith('vgg'):
         fact_model = copy.deepcopy(model)
         # factorize vgg
@@ -94,6 +95,7 @@ def factorize_network(
                 layer, block = name.split('.')
                 conv_to_replace = getattr(fact_model, layer)
                 setattr(conv_to_replace, block, fact_layer)
+    
     else:
         raise NotImplementedError(model_name)
 
