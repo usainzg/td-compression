@@ -126,9 +126,7 @@ if __name__ == "__main__":
         "lr": args.lr,
         "tn_decomp": args.tn_decomp,
         "tn_rank": args.tn_rank,
-        "implementation": args.tn_implementation
-        if args.tn_decomp is not None
-        else None,
+        "implementation": args.tn_implementation if args.tn_decomp is not None else None,
         "n_params": n_params,
     }
     # update run config
