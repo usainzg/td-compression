@@ -51,7 +51,7 @@ def parse_args():
 
 
 def create_model(
-    model_name, tn_decomp=None, tn_rank=None, implementation="reconstructed"
+    model_name
 ):
     if model_name == "resnet18":
         model = resnet.ResNet18()
@@ -68,15 +68,7 @@ def create_model(
     else:
         raise ValueError("Unknown model name: {}".format(model_name))
 
-    if tn_decomp is not None:
-        model = factorizations.factorize_network(
-            model_name,
-            model,
-            tn_decomp,
-            tn_rank,
-            decompose_weights=False,
-            implementation=implementation,
-        )
+    
     return model
 
 
@@ -93,11 +85,27 @@ if __name__ == "__main__":
     args = parse_args()
     print(args)
     # create model and count parameters
-    model = create_model(
-        args.model, args.tn_decomp, args.tn_rank, args.tn_implementation
-    )
+    model = create_model(args.model)
+    # count parameters of model
     n_params = utils.count_parameters(model)
-    print(f"Number of parameters: {n_params}")
+    print(f"Number of parameters (model): {n_params}")
+    # factorize model
+    if args.tn_decomp is not None:
+        model = factorizations.factorize_network(
+            args.model,
+            model,
+            args.tn_decomp,
+            args.tn_rank,
+            decompose_weights=False,
+            implementation=args.implementation,
+        )
+        # count parameters of fact_model
+        n_params_fact = utils.count_parameters(model)
+        print(f"Number of parameters (fact_model): {n_params_fact}")
+        # get compression ratio
+        compression_ratio = n_params / n_params_fact
+        print(f"Compression ratio: {compression_ratio}")
+        n_params = n_params_fact # to log n_params_fact
     # init lightining module
     pl_module = model_module.Model(model, init_lr=args.lr)
     # get and prepare data
