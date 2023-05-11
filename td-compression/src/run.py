@@ -51,7 +51,6 @@ def parse_args():
     parser.add_argument("--precision", type=int, default=32, help="precision")
     return parser.parse_args()
 
-
 def create_model(
     model_name
 ):
@@ -70,7 +69,6 @@ def create_model(
     else:
         raise ValueError("Unknown model name: {}".format(model_name))
 
-    
     return model
 
 
@@ -143,7 +141,6 @@ if __name__ == "__main__":
     }
     # update run config
     wandb_logger.experiment.config.update(config)
-
     # init trainer
     trainer = pl.Trainer(
         accelerator="gpu",
@@ -158,6 +155,7 @@ if __name__ == "__main__":
     # test
     trainer.test(pl_module, data_dict["test"])
     # save model
-    trainer.save_checkpoint(
+    """trainer.save_checkpoint(
         os.path.join(args.out_dir, f"{log_name}.ckpt"), weights_only=True
-    )
+    )"""
+    torch.save(model.state_dict(), os.path.join(args.out_dir, f"{log_name}.pth"))
