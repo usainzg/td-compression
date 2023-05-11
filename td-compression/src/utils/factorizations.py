@@ -62,7 +62,7 @@ def factorize_layer(
         raise NotImplementedError(type(module))
     
     if init_std:
-        print('Initializing with std')
+        #print('Initializing with std')
         fact_module.weight.normal_(0, init_std)
     
     return fact_module
@@ -86,7 +86,8 @@ def factorize_network(
         # factorize resnet
         for i, (name, module) in enumerate(model.named_modules()):
             if name in layer_names:
-                print(f'factorizing: {name}')
+                if verbose:
+                    print(f'factorizing: {name}')
                 fact_module = factorize_layer(
                     module=module, 
                     factorization=tn_decomp, 
@@ -106,7 +107,8 @@ def factorize_network(
             if type(module) == torch.nn.modules.conv.Conv2d:
                 if name == 'features.0':
                     continue # Skip first layer
-                print(f'factorizing: {name}')
+                if verbose:
+                    print(f'factorizing: {name}')
                 fact_layer = factorize_layer(
                     module=module, 
                     factorization=tn_decomp, 

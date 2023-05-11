@@ -1,15 +1,11 @@
 import argparse
-import time
-import os
 
 import lightning.pytorch as pl
-import lightning.pytorch.loggers as pl_loggers
 import torch
-import torch._dynamo
+import numpy as np
 
 from models import resnet, vgg
 from utils import factorizations, data, utils
-from modules import model_module
 
 
 POSSIBLE_MODELS = ["resnet18", "resnet34", "resnet50", "vgg11", "vgg16", "vgg19"]
@@ -18,7 +14,7 @@ TN_IMPLEMENTATIONS = ["reconstructed", "factorized", "mobilenet"]
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Train a model")
+    parser = argparse.ArgumentParser(description="model")
     parser.add_argument(
         "--model",
         type=str,
@@ -27,20 +23,14 @@ def parse_args():
         help="model name",
     )
     parser.add_argument("--batch-size", type=int, default=128, help="batch size")
-    parser.add_argument("--epochs", type=int, default=5, help="number of epochs")
-    parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
-    parser.add_argument("--log-dir", type=str, default="logs", help="log directory")
-    parser.add_argument(
-        "--out-dir", type=str, default="output", help="output directory"
-    )
     parser.add_argument(
         "--tn-decomp",
         type=str,
-        default=None,
+        default="tucker",
         choices=TN_DECOMPOSITIONS,
         help="tensor decomposition",
     )
-    parser.add_argument("--tn-rank", type=float, default=None, help="tensor rank")
+    parser.add_argument("--tn-rank", type=float, default=0.8, help="tensor rank")
     parser.add_argument(
         "--tn-implementation",
         type=str,
@@ -48,7 +38,6 @@ def parse_args():
         choices=TN_IMPLEMENTATIONS,
         help="implementation",
     )
-    parser.add_argument("--precision", type=int, default=32, help="precision")
     return parser.parse_args()
 
 
@@ -70,7 +59,6 @@ def create_model(
     else:
         raise ValueError("Unknown model name: {}".format(model_name))
 
-    
     return model
 
 def timed(fn):
@@ -110,7 +98,7 @@ if __name__ == "__main__":
     print(f"Number of parameters (model): {n_params}")
     # factorize model
     if args.tn_decomp is not None:
-        model = factorizations.factorize_network(
+        fact_model = factorizations.factorize_network(
             args.model,
             model,
             args.tn_decomp,
@@ -119,94 +107,38 @@ if __name__ == "__main__":
             implementation=args.tn_implementation,
         )
         # count parameters of fact_model
-        n_params_fact = utils.count_parameters(model)
+        n_params_fact = utils.count_parameters(fact_model)
         print(f"Number of parameters (fact_model): {n_params_fact}")
         # get compression ratio
         compression_ratio = n_params / n_params_fact
         print(f"Compression ratio: {compression_ratio}")
         n_params = n_params_fact # to log n_params_fact
+        print("~" * 10)
     
     N_ITERS = 10
     model = model.cuda()
-    # Reset since we are using a different mode.
-    torch._dynamo.reset()
-    torch._dynamo.config.verbose=True
-    torch._dynamo.config.suppress_errors = True
-    evaluate_opt = torch.compile(evaluate, mode="reduce-overhead")
-    
-    eager_times = []
-    compile_times = []
+    fact_model = fact_model.cuda()
+
+    model_times = []
+    fact_times = []
     for i in range(N_ITERS):
-        inp = generate_data(16)[0]
-        _, eager_time = timed(lambda: evaluate(model, inp))
-        eager_times.append(eager_time)
-        print(f"eager eval time {i}: {eager_time}")
+        inp = generate_data(args.batch_size)[0]
+        _, model_time = timed(lambda: evaluate(model, inp))
+        model_times.append(model_time)
+        print(f"model eval time {i}: {model_time}")
 
     print("~" * 10)
 
-    compile_times = []
+    fact_times = []
     for i in range(N_ITERS):
-        inp = generate_data(16)[0]
-        _, compile_time = timed(lambda: evaluate_opt(model, inp))
-        compile_times.append(compile_time)
-        print(f"compile eval time {i}: {compile_time}")
+        inp = generate_data(args.batch_size)[0]
+        _, fact_time = timed(lambda: evaluate(fact_model, inp))
+        fact_times.append(fact_time)
+        print(f"compile eval time {i}: {fact_time}")
     print("~" * 10)
 
-    import numpy as np
-    eager_med = np.median(eager_times)
-    compile_med = np.median(compile_times)
-    speedup = eager_med / compile_med
-    print(f"(eval) eager median: {eager_med}, compile median: {compile_med}, speedup: {speedup}x")
+    model_med = np.median(model_times)
+    fact_med = np.median(fact_times)
+    speedup = model_med / fact_med
+    print(f"(eval) model median: {model_med}, factorized model median: {fact_med}, speedup: {speedup}x")
     print("~" * 10)
-    """
-    # init lightining module
-    pl_module = model_module.Model(model, init_lr=args.lr)
-    # get and prepare data
-    data_dict = data.prepare_data(
-        batch_size=args.batch_size, num_workers=NUM_WORKERS, seed=SEED
-    )
-    # create log dir if not exists
-    if not os.path.exists(args.log_dir):
-        os.makedirs(args.log_dir)
-    # create out dir if not exists
-    if not os.path.exists(args.out_dir):
-        os.makedirs(args.out_dir)
-    # wandb run name
-    if args.tn_decomp is not None:
-        log_name = f"{args.model}-{args.tn_decomp}-{args.tn_rank}-{time.time()}"
-    else:
-        log_name = f"{args.model}-{time.time()}"
-    # init loggers
-    wandb_logger = pl_loggers.WandbLogger(
-        name=log_name, project="td-compression", save_dir=args.log_dir
-    )
-    config = {
-        "model": args.model,
-        "batch_size": args.batch_size,
-        "epochs": args.epochs,
-        "lr": args.lr,
-        "tn_decomp": args.tn_decomp,
-        "tn_rank": args.tn_rank,
-        "implementation": args.tn_implementation if args.tn_decomp is not None else None,
-        "n_params": n_params,
-        "precision": args.precision,
-    }
-    # update run config
-    wandb_logger.experiment.config.update(config)
-    # init trainer
-    trainer = pl.Trainer(
-        accelerator="gpu",
-        max_epochs=args.epochs,
-        default_root_dir=args.log_dir,
-        logger=wandb_logger,
-        precision=args.precision
-    )
-    # train
-    trainer.fit(pl_module, data_dict["train"], data_dict["val"])
-    # test
-    trainer.test(pl_module, data_dict["test"])
-    # save model
-    trainer.save_checkpoint(
-        os.path.join(args.out_dir, f"{log_name}.ckpt"), weights_only=True
-    )
-    """
