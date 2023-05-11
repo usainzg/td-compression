@@ -5,6 +5,7 @@ import os
 import lightning.pytorch as pl
 import lightning.pytorch.loggers as pl_loggers
 import torch
+import torch._dynamo
 
 from models import resnet, vgg
 from utils import factorizations, data, utils
@@ -72,6 +73,23 @@ def create_model(
     
     return model
 
+def timed(fn):
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()
+    result = fn()
+    end.record()
+    torch.cuda.synchronize()
+    return result, start.elapsed_time(end) / 1000
+
+def generate_data(b):
+    return (
+        torch.randn(b, 3, 32, 32).to(torch.float32).cuda(),
+        torch.randint(10, (b,)).cuda(),
+    )
+
+def evaluate(mod, inp):
+    return mod(inp)
 
 if __name__ == "__main__":
     NUM_WORKERS = 4
@@ -98,7 +116,7 @@ if __name__ == "__main__":
             args.tn_decomp,
             args.tn_rank,
             decompose_weights=False,
-            implementation=args.implementation,
+            implementation=args.tn_implementation,
         )
         # count parameters of fact_model
         n_params_fact = utils.count_parameters(model)
@@ -107,6 +125,40 @@ if __name__ == "__main__":
         compression_ratio = n_params / n_params_fact
         print(f"Compression ratio: {compression_ratio}")
         n_params = n_params_fact # to log n_params_fact
+    
+    N_ITERS = 10
+    model = model.cuda()
+    # Reset since we are using a different mode.
+    torch._dynamo.reset()
+    torch._dynamo.config.verbose=True
+    torch._dynamo.config.suppress_errors = True
+    evaluate_opt = torch.compile(evaluate, mode="reduce-overhead")
+    
+    eager_times = []
+    compile_times = []
+    for i in range(N_ITERS):
+        inp = generate_data(16)[0]
+        _, eager_time = timed(lambda: evaluate(model, inp))
+        eager_times.append(eager_time)
+        print(f"eager eval time {i}: {eager_time}")
+
+    print("~" * 10)
+
+    compile_times = []
+    for i in range(N_ITERS):
+        inp = generate_data(16)[0]
+        _, compile_time = timed(lambda: evaluate_opt(model, inp))
+        compile_times.append(compile_time)
+        print(f"compile eval time {i}: {compile_time}")
+    print("~" * 10)
+
+    import numpy as np
+    eager_med = np.median(eager_times)
+    compile_med = np.median(compile_times)
+    speedup = eager_med / compile_med
+    print(f"(eval) eager median: {eager_med}, compile median: {compile_med}, speedup: {speedup}x")
+    print("~" * 10)
+    """
     # init lightining module
     pl_module = model_module.Model(model, init_lr=args.lr)
     # get and prepare data
@@ -157,3 +209,4 @@ if __name__ == "__main__":
     trainer.save_checkpoint(
         os.path.join(args.out_dir, f"{log_name}.ckpt"), weights_only=True
     )
+    """
