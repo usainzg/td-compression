@@ -14,7 +14,7 @@ def factorize_layer(
     factorization='tucker',
     rank=None,
     decompose_weights=False,
-    vbmf=False,
+    vbmf=0,
     implementation='reconstructed'
 ):
     init_std = None if decompose_weights else 0.01
@@ -22,15 +22,15 @@ def factorize_layer(
     fixed_rank_modes = 'spatial' if factorization == 'tucker' else None
     # implementation see: https://github.com/tensorly/torch/blob/d27d58f16101b7ecc431372eb218ceda59d8b043/tltorch/functional/convolution.py#L286
     
-    if rank is None and vbmf == False and factorization != 'tucker':
+    if rank is None and vbmf == 0 and factorization != 'tucker':
         raise ValueError('rank must be specified for non-tucker factorization')
     
-    if decompose_weights:
-        vbmf = False # VBMF is not needed if weights are decomposed
+    if not decompose_weights:
+        vbmf = 0 
 
     if type(module) == torch.nn.modules.conv.Conv2d:
         # rank selection
-        if vbmf:
+        if vbmf ==  1:
             ranks = factorizations.estimate_ranks(module)
         elif rank is not None:
             ranks = rank
@@ -74,6 +74,7 @@ def factorize_network(
     rank,
     decompose_weights,
     implementation='reconstructed',
+    vbmf=0,
     layers=[],
     exclude=[],
     verbose=False
@@ -90,6 +91,7 @@ def factorize_network(
                     module=module, 
                     factorization=tn_decomp, 
                     rank=rank, 
+                    vbmf=vbmf,
                     decompose_weights=decompose_weights,
                     implementation=implementation
                 )
@@ -109,6 +111,7 @@ def factorize_network(
                     module=module, 
                     factorization=tn_decomp, 
                     rank=rank, 
+                    vbmf=vbmf,
                     decompose_weights=decompose_weights,
                     implementation=implementation
                 )

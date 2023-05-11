@@ -4,7 +4,6 @@ import os
 
 import lightning.pytorch as pl
 import lightning.pytorch.loggers as pl_loggers
-from lightning.pytorch.callbacks import RichModelSummary
 import torch
 
 from models import resnet, vgg
@@ -148,7 +147,6 @@ if __name__ == "__main__":
         default_root_dir=args.log_dir,
         logger=wandb_logger,
         precision=args.precision,
-        callbacks=RichModelSummary(max_depth=2),
     )
     # train
     trainer.fit(pl_module, data_dict["train"], data_dict["val"])

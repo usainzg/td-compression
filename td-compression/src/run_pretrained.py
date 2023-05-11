@@ -4,7 +4,6 @@ import os
 
 import lightning.pytorch as pl
 import lightning.pytorch.loggers as pl_loggers
-from lightning.pytorch.callbacks import RichModelSummary
 from torchvision import models
 import torch
 
@@ -14,7 +13,7 @@ from modules import model_module
 
 
 TN_DECOMPOSITIONS = ["tucker", "cp", "tt"]
-RANK_SELECTION = ["manual", "auto"]
+VBMF = [0, 1]
 TN_IMPLEMENTATIONS = ["reconstructed", "factorized", "mobilenet"]
 
 
@@ -45,10 +44,10 @@ def parse_args():
         help="implementation",
     )
     parser.add_argument(
-        "--rank-selection",
-        type=str,
-        default="manual",
-        choices=RANK_SELECTION,
+        "--vbmf",
+        type=int,
+        default=0,
+        choices=VBMF,
         help="rank selection",
     )
     parser.add_argument("--precision", type=int, default=32, help="precision")
@@ -108,6 +107,7 @@ if __name__ == "__main__":
             pretrained_model,
             args.tn_decomp,
             args.tn_rank,
+            vbmf=args.vbmf,
             decompose_weights=True,  # decompose weights from pretrained model
             implementation=args.tn_implementation,
         )
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     if args.tn_decomp is None:
         run_name = f"pre_{args.model}_{time.time()}"
     else:
-        run_name = f"pre_{args.model}_{args.tn_decomp}_{args.tn_rank}_{args.rank_selection}_{time.time()}"
+        run_name = f"pre_{args.model}_{args.tn_decomp}_{args.tn_rank}_{time.time()}"
     # init logger
     wandb_logger = pl_loggers.WandbLogger(name=run_name, project="td-compression")
     # log config
@@ -148,8 +148,7 @@ if __name__ == "__main__":
         else None,
         "n_params": n_params,
         "precision": args.precision,
-        "compression_ratio": compression_ratio if args.tn_decomp is not None else None,
-        "pretrained": "torch" if args.pretrained_path is None else "lightning",
+        "compression_ratio": compression_ratio if args.tn_decomp is not None else 1.0,
     }
     # update run config
     wandb_logger.experiment.config.update(config)
@@ -159,7 +158,6 @@ if __name__ == "__main__":
         default_root_dir=args.log_dir,
         logger=wandb_logger,
         precision=args.precision,
-        callbacks=RichModelSummary(max_depth=2),
     )
     # TODO: add fine-tuning
     # test
