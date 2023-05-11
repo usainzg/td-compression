@@ -4,6 +4,7 @@ import os
 
 import lightning.pytorch as pl
 import lightning.pytorch.loggers as pl_loggers
+from lightning.pytorch.callbacks import RichModelSummary
 import torch
 
 from models import resnet, vgg
@@ -98,7 +99,7 @@ if __name__ == "__main__":
             args.tn_decomp,
             args.tn_rank,
             decompose_weights=False,
-            implementation=args.implementation,
+            implementation=args.tn_implementation,
         )
         # count parameters of fact_model
         n_params_fact = utils.count_parameters(model)
@@ -138,16 +139,19 @@ if __name__ == "__main__":
         "implementation": args.tn_implementation if args.tn_decomp is not None else None,
         "n_params": n_params,
         "precision": args.precision,
+        "compression_ratio": compression_ratio if args.tn_decomp is not None else None,
     }
     # update run config
     wandb_logger.experiment.config.update(config)
+
     # init trainer
     trainer = pl.Trainer(
         accelerator="gpu",
         max_epochs=args.epochs,
         default_root_dir=args.log_dir,
         logger=wandb_logger,
-        precision=args.precision
+        precision=args.precision,
+        callbacks=RichModelSummary(max_depth=2),
     )
     # train
     trainer.fit(pl_module, data_dict["train"], data_dict["val"])
