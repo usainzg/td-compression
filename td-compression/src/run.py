@@ -127,6 +127,7 @@ if __name__ == "__main__":
     wandb_logger = pl_loggers.WandbLogger(
         name=log_name, project="td-compression", save_dir=args.log_dir
     )
+    tensorboard_logger = pl_loggers.TensorBoardLogger(name=log_name, save_dir=f'{args.log_dir}/tensorboard')
     config = {
         "model": args.model,
         "batch_size": args.batch_size,
@@ -146,7 +147,7 @@ if __name__ == "__main__":
         accelerator=args.accelerator,
         max_epochs=args.epochs,
         default_root_dir=args.log_dir,
-        logger=wandb_logger,
+        logger=[tensorboard_logger, wandb_logger],
         precision=args.precision,
         enable_progress_bar=False
     )
