@@ -19,16 +19,18 @@
 
 export WANDB_API_KEY='b36e9889bae82cb5e6c3d8cb86e29df222fac76d'
 
+comp_ratios=(0.3 0.4 0.5 0.6 0.7 0.8)
+
 let ind=1
-for rep in {1..3}; do
+for ratio in "${values[@]}"; do
     eval " options[${ind}]=' --epochs ${rep} ' "
-    # echo ${options[${ind}]}
+    echo ${options[${ind}]}
     let ind=$ind+1
     
 done
 
-# echo "Number of jobs submitted: $(($ind-1))"
-priscilla exec python3 run.py ${options[${SLURM_ARRAY_TASK_ID}]}
+#echo "Number of jobs submitted: $(($ind-1))"
+#priscilla exec python3 run.py ${options[${SLURM_ARRAY_TASK_ID}]}
 
 
 
