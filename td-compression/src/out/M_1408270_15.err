@@ -23,3 +23,31 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [6]
 19.4 M    Total params
 77.408    Total estimated model params size (MB)
 SLURM auto-requeueing enabled. Setting signal handlers.
+`Trainer.fit` stopped: `max_epochs=50` reached.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [6]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       test_accuracy ▁
+wandb:           test_loss ▁
+wandb:      train_accuracy ▁▃▄▄▅▅▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇████▇██████████
+wandb:          train_loss █▆▅▄▃▃▃▃▃▃▂▂▂▂▂▃▂▂▂▂▁▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:        val_accuracy ▁▂▄▂▆▆▅▆▆▆▇▇▇▇▇▇▇██▇███▇████████████████
+wandb:            val_loss ▇▆▄█▃▂▃▂▂▂▂▂▁▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 50
+wandb:       test_accuracy 0.9098
+wandb:           test_loss 0.39727
+wandb:      train_accuracy 0.95833
+wandb:          train_loss 0.10753
+wandb: trainer/global_step 17600
+wandb:        val_accuracy 0.9044
+wandb:            val_loss 0.34922
+wandb: 
+wandb: 🚀 View run resnet50-tucker-0.5-1684864154.6422489 at: https://wandb.ai/usainzg/td-compression/runs/jukpniz7
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: logs/wandb/run-20230523_194933-jukpniz7/logs

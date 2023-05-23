@@ -23,3 +23,31 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [2]
 4.6 M     Total params
 18.350    Total estimated model params size (MB)
 SLURM auto-requeueing enabled. Setting signal handlers.
+`Trainer.fit` stopped: `max_epochs=50` reached.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [2]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: \ 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: | 0.005 MB of 0.011 MB uploaded (0.000 MB deduped)wandb: / 0.011 MB of 0.011 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       test_accuracy ▁
+wandb:           test_loss ▁
+wandb:      train_accuracy ▁▂▅▄▅▆▆▅▇▆▇▇▆▇▇▇▆▇▇▇██▇█▆███▇██████████▇
+wandb:          train_loss █▆▄▄▃▃▃▄▂▃▂▂▂▂▂▂▂▂▂▂▁▁▂▁▂▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:        val_accuracy ▁▂▃▅▆▆▆▆▇▇▇▇▇▇▇█▇▇█▇███▇██▇█████████████
+wandb:            val_loss ██▇▄▃▂▃▂▂▂▂▁▁▂▂▁▂▁▁▂▁▁▁▂▁▁▂▁▁▁▂▂▂▁▁▂▁▂▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 50
+wandb:       test_accuracy 0.9016
+wandb:           test_loss 0.42438
+wandb:      train_accuracy 0.95833
+wandb:          train_loss 0.07745
+wandb: trainer/global_step 17600
+wandb:        val_accuracy 0.8942
+wandb:            val_loss 0.40038
+wandb: 
+wandb: 🚀 View run resnet18-cp-0.4-1684864092.2014837 at: https://wandb.ai/usainzg/td-compression/runs/8hh73m37
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: logs/wandb/run-20230523_194820-8hh73m37/logs

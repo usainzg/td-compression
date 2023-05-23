@@ -8,3 +8,9 @@ Compression ratio: 3.208215747644003
 ==> Preparing data..
 Files already downloaded and verified
 Files already downloaded and verified
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│       test_accuracy       │    0.8950999975204468     │
+│         test_loss         │    0.4148447811603546     │
+└───────────────────────────┴───────────────────────────┘

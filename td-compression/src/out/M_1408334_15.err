@@ -1,0 +1,53 @@
+[rank: 0] Global seed set to 42
+wandb: Currently logged in as: usainzg. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in logs/wandb/run-20230523_205000-pi6uubhg
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run vgg16-tucker-0.5-1684867785.4890516
+wandb: ⭐️ View project at https://wandb.ai/usainzg/td-compression
+wandb: 🚀 View run at https://wandb.ai/usainzg/td-compression/runs/pi6uubhg
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/vgg16-tucker-0.5-1684867785.4890516
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [1]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | VGG              | 7.4 M 
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+7.4 M     Trainable params
+0         Non-trainable params
+7.4 M     Total params
+29.552    Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+`Trainer.fit` stopped: `max_epochs=50` reached.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [1]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: \ 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: | 0.006 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: / 0.006 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: - 0.012 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       test_accuracy ▁
+wandb:           test_loss ▁
+wandb:      train_accuracy ▁▂▅▄▅▆▆▆▇▆▇▆▇▇▇▆▇▇▇▇▇▇▇▇▇█▇▇▇▇▇███▇█▇█▇▇
+wandb:          train_loss █▆▄▄▄▃▃▃▃▃▂▃▃▂▂▃▂▂▂▂▂▁▂▂▃▂▂▂▂▂▂▂▁▁▂▁▁▁▁▂
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:        val_accuracy ▁▃▄▄▅▅▅▆▆▇▆▇▇▇▇▇▇▇▇▇▇▇█▇█▇██████████████
+wandb:            val_loss █▇▅▅▄▄▄▃▃▂▃▂▂▂▂▂▂▂▂▂▃▂▂▂▁▂▂▂▁▁▂▁▁▁▂▁▁▂▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 50
+wandb:       test_accuracy 0.88
+wandb:           test_loss 0.39452
+wandb:      train_accuracy 0.91667
+wandb:          train_loss 0.23617
+wandb: trainer/global_step 17600
+wandb:        val_accuracy 0.8756
+wandb:            val_loss 0.40374
+wandb: 
+wandb: 🚀 View run vgg16-tucker-0.5-1684867785.4890516 at: https://wandb.ai/usainzg/td-compression/runs/pi6uubhg
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: logs/wandb/run-20230523_205000-pi6uubhg/logs

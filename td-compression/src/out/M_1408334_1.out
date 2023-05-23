@@ -1,0 +1,16 @@
+/pscratch/usainz/projects/tn-comp/td-compression/td-compression/src
+Executing the following command: pipenv run python3 run.py --model resnet34 --tn-decomp tucker --tn-rank 0.3 in directory /home/usainz/scratch/projects/tn-comp/td-compression/td-compression/src using the container --nv /opt/ohpc/pub/containers/CUDA112d.sif
+
+Namespace(accelerator='gpu', batch_size=128, epochs=50, log_dir='logs', lr=0.001, model='resnet34', out_dir='output', precision=32, tn_decomp='tucker', tn_implementation='reconstructed', tn_rank=0.3)
+Number of parameters (model): 21282122
+Number of parameters (fact_model): 13591081
+Compression ratio: 1.5658888354796796
+==> Preparing data..
+Files already downloaded and verified
+Files already downloaded and verified
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│       test_accuracy       │    0.9067999720573425     │
+│         test_loss         │    0.3940980136394501     │
+└───────────────────────────┴───────────────────────────┘
