@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torch = "*"
+torchvision = "*"
+tensorly = "*"
+tensorly-torch = "*"
+jupyterlab = "*"
+lightning = "*"
+wandb = "*"
+numpy = "*"
+matplotlib = "*"
+scipy = "*"
+ipywidgets = "*"
+rich = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

@@ -48,6 +48,7 @@ def parse_args():
         help="implementation",
     )
     parser.add_argument("--precision", type=int, default=32, help="precision")
+    parser.add_argument("--accelerator", type=str, default="gpu", help="accelerator")
     return parser.parse_args()
 
 def create_model(
@@ -142,11 +143,12 @@ if __name__ == "__main__":
     wandb_logger.experiment.config.update(config)
     # init trainer
     trainer = pl.Trainer(
-        accelerator="gpu",
+        accelerator=args.accelerator,
         max_epochs=args.epochs,
         default_root_dir=args.log_dir,
         logger=wandb_logger,
         precision=args.precision,
+        enable_progress_bar=False
     )
     # train
     trainer.fit(pl_module, data_dict["train"], data_dict["val"])
@@ -156,4 +158,4 @@ if __name__ == "__main__":
     """trainer.save_checkpoint(
         os.path.join(args.out_dir, f"{log_name}.ckpt"), weights_only=True
     )"""
-    torch.save(model.state_dict(), os.path.join(args.out_dir, f"{log_name}.pth"))
+    # torch.save(model.state_dict(), os.path.join(args.out_dir, f"{log_name}.pth"))

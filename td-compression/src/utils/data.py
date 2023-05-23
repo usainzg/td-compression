@@ -6,7 +6,7 @@ import torch
 def prepare_data(batch_size=128, num_workers=4, seed=42):
     torch.manual_seed(seed)
     print('==> Preparing data..')
-    data_root = '/home/usainzg/Documentos/KISA/td-compression/td-compression/datasets/cifar10'
+    data_root = 'datasets'
 
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
@@ -44,3 +44,6 @@ def prepare_data(batch_size=128, num_workers=4, seed=42):
         'test': testloader, 
         'classes': classes
     }
+
+if __name__ == '__main__':
+    prepare_data()
