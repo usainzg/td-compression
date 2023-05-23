@@ -149,7 +149,8 @@ if __name__ == "__main__":
         default_root_dir=args.log_dir,
         logger=[tensorboard_logger, wandb_logger],
         precision=args.precision,
-        enable_progress_bar=False
+        enable_progress_bar=False,
+        enable_checkpointing=False
     )
     # train
     trainer.fit(pl_module, data_dict["train"], data_dict["val"])
