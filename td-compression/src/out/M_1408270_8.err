@@ -1,0 +1,25 @@
+[rank: 0] Global seed set to 42
+wandb: Currently logged in as: usainzg. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in logs/wandb/run-20230523_194820-8hh73m37
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run resnet18-cp-0.4-1684864092.2014837
+wandb: ⭐️ View project at https://wandb.ai/usainzg/td-compression
+wandb: 🚀 View run at https://wandb.ai/usainzg/td-compression/runs/8hh73m37
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/resnet18-cp-0.4-1684864092.2014837
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [2]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | ResNet           | 4.6 M 
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+4.6 M     Trainable params
+0         Non-trainable params
+4.6 M     Total params
+18.350    Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.

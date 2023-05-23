@@ -26,7 +26,7 @@ def parse_args():
         help="model name",
     )
     parser.add_argument("--batch-size", type=int, default=128, help="batch size")
-    parser.add_argument("--epochs", type=int, default=5, help="number of epochs")
+    parser.add_argument("--epochs", type=int, default=50, help="number of epochs")
     parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
     parser.add_argument("--log-dir", type=str, default="logs", help="log directory")
     parser.add_argument(

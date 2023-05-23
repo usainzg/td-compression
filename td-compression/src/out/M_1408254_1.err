@@ -1,0 +1,53 @@
+[rank: 0] Global seed set to 42
+wandb: Currently logged in as: usainzg. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in logs/wandb/run-20230523_192547-rt4c5d3u
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run resnet18-1684862741.3110342
+wandb: ⭐️ View project at https://wandb.ai/usainzg/td-compression
+wandb: 🚀 View run at https://wandb.ai/usainzg/td-compression/runs/rt4c5d3u
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/resnet18-1684862741.3110342
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [6]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | ResNet           | 11.2 M
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+11.2 M    Trainable params
+0         Non-trainable params
+11.2 M    Total params
+44.696    Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+`Trainer.fit` stopped: `max_epochs=50` reached.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [6]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: \ 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: | 0.006 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: / 0.006 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: - 0.012 MB of 0.012 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       test_accuracy ▁
+wandb:           test_loss ▁
+wandb:      train_accuracy ▁▂▅▅▄▆▆▆▆▆▇▇▇▇▇▇▇▇▇█▇█▇▇▇█████████▇█████
+wandb:          train_loss █▆▄▄▄▃▃▃▂▂▂▂▂▂▂▂▂▂▁▁▂▁▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:        val_accuracy ▁▂▅▅▆▆▆▇▇▇▇▇▇▇██████████████████████████
+wandb:            val_loss █▇▄▃▃▂▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▁▁▁▂▁▂▁▁▂▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 50
+wandb:       test_accuracy 0.9043
+wandb:           test_loss 0.47928
+wandb:      train_accuracy 1.0
+wandb:          train_loss 0.01275
+wandb: trainer/global_step 17600
+wandb:        val_accuracy 0.9106
+wandb:            val_loss 0.38416
+wandb: 
+wandb: 🚀 View run resnet18-1684862741.3110342 at: https://wandb.ai/usainzg/td-compression/runs/rt4c5d3u
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: logs/wandb/run-20230523_192547-rt4c5d3u/logs

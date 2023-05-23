@@ -15,7 +15,7 @@
 #SBATCH --partition=KAT
 #SBATCH --gpus=1
 
-#SBATCH --array=1-3
+#SBATCH --array=1-48
 
 export WANDB_API_KEY='b36e9889bae82cb5e6c3d8cb86e29df222fac76d'
 
@@ -26,6 +26,7 @@ for model in resnet18 resnet50 vgg11 vgg19; do
 		for ratio in 0.3 0.4 0.5 0.6 0.7 0.8; do
 		    eval " options[${ind}]=' --model ${model} --tn-decomp ${decomp} --tn-rank ${ratio} ' "
 		    #echo ${options[${ind}]}
+		    #echo $ind
 		    let ind=$ind+1
 		done
 	done

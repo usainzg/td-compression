@@ -22,11 +22,11 @@ export WANDB_API_KEY='b36e9889bae82cb5e6c3d8cb86e29df222fac76d'
 let ind=1
 for model in resnet18 resnet50 vgg11 vgg19; do
     eval " options[${ind}]=' --model ${model} ' "
-    echo ${options[${ind}]}
+    #echo ${options[${ind}]}
     let ind=$ind+1
 done
-echo "Number of jobs submitted: $(($ind-1))"
-#priscilla exec python3 run.py ${options[${SLURM_ARRAY_TASK_ID}]}
+#echo "Number of jobs submitted: $(($ind-1))"
+priscilla exec python3 run.py ${options[${SLURM_ARRAY_TASK_ID}]}
 
 
 

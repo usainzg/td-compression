@@ -1,0 +1,73 @@
+[rank: 0] Global seed set to 42
+Traceback (most recent call last):
+  File "run.py", line 127, in <module>
+    wandb_logger = pl_loggers.WandbLogger(
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/lightning/pytorch/loggers/wandb.py", line 357, in __init__
+    _ = self.experiment
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/lightning/fabric/loggers/logger.py", line 114, in experiment
+    return fn(self)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/lightning/pytorch/loggers/wandb.py", line 405, in experiment
+    self._experiment = wandb.init(**self._wandb_init)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_init.py", line 1169, in init
+    raise e
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_init.py", line 1146, in init
+    wi.setup(kwargs)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_init.py", line 172, in setup
+    self._wl = wandb_setup.setup(settings=setup_settings)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 327, in setup
+    ret = _setup(settings=settings)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 320, in _setup
+    wl = _WandbSetup(settings=settings)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 303, in __init__
+    _WandbSetup._instance = _WandbSetup__WandbSetup(settings=settings, pid=pid)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 114, in __init__
+    self._setup()
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 250, in _setup
+    self._setup_manager()
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_setup.py", line 277, in _setup_manager
+    self._manager = wandb_manager._Manager(settings=self._settings)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/wandb_manager.py", line 145, in __init__
+    self._service.start()
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/service.py", line 199, in start
+    self._launch_server()
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/service.py", line 193, in _launch_server
+    _sentry.reraise(e)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/analytics/sentry.py", line 146, in reraise
+    raise exc.with_traceback(sys.exc_info()[2])
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/service.py", line 191, in _launch_server
+    self._wait_for_ports(fname, proc=internal_proc)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/service.py", line 141, in _wait_for_ports
+    raise ServiceStartTimeoutError(
+wandb.sdk.service.service.ServiceStartTimeoutError: Timed out waiting for wandb service to start after 30.0 seconds. Try increasing the timeout with the `_service_wait` setting.
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/__main__.py", line 3, in <module>
+    cli.cli(prog_name="python -m wandb")
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/click/core.py", line 1130, in __call__
+    return self.main(*args, **kwargs)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/click/core.py", line 1055, in main
+    rv = self.invoke(ctx)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/click/core.py", line 1657, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/click/core.py", line 1404, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/click/core.py", line 760, in invoke
+    return __callback(*args, **kwargs)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/cli/cli.py", line 106, in wrapper
+    return func(*args, **kwargs)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/cli/cli.py", line 291, in service
+    server.serve()
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/server.py", line 139, in serve
+    self._inform_used_ports(grpc_port=grpc_port, sock_port=sock_port)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/server.py", line 67, in _inform_used_ports
+    pf.write(self._port_fname)
+  File "/pscratch/usainz/projects/tn-comp/td-compression/.venv/lib/python3.8/site-packages/wandb/sdk/service/port_file.py", line 26, in write
+    f = tempfile.NamedTemporaryFile(prefix=bname, dir=dname, mode="w", delete=False)
+  File "/usr/lib/python3.8/tempfile.py", line 679, in NamedTemporaryFile
+    (fd, name) = _mkstemp_inner(dir, prefix, suffix, flags, output_type)
+  File "/usr/lib/python3.8/tempfile.py", line 389, in _mkstemp_inner
+    fd = _os.open(file, flags, 0o600)
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp2rwmubsg/port-9895.txtk7tluhjp'
