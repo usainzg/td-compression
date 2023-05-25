@@ -15,15 +15,16 @@
 #SBATCH --partition=KAT
 #SBATCH --gpus=1
 
-#SBATCH --array=1-48
+#SBATCH --array=1-8
 
 export WANDB_API_KEY='b36e9889bae82cb5e6c3d8cb86e29df222fac76d'
-
+export WANDB_SILENT=true
+export WANDB__SERVICE_WAIT=300
 
 let ind=1
-for model in resnet18 resnet50 vgg11 vgg19; do
-	for decomp in tucker cp; do
-		for ratio in 0.3 0.4 0.5 0.6 0.7 0.8; do
+for model in resnet18; do
+	for decomp in tucker; do
+		for ratio in 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9; do
 		    eval " options[${ind}]=' --model ${model} --tn-decomp ${decomp} --tn-rank ${ratio} ' "
 		    #echo ${options[${ind}]}
 		    #echo $ind

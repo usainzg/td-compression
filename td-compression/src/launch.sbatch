@@ -15,12 +15,14 @@
 #SBATCH --partition=KAT
 #SBATCH --gpus=1
 
-#SBATCH --array=1-4
+#SBATCH --array=1-2
 
 export WANDB_API_KEY='b36e9889bae82cb5e6c3d8cb86e29df222fac76d'
+export WANDB_SILENT=true
+export WANDB__SERVICE_WAIT=300
 
 let ind=1
-for model in resnet18 resnet50 vgg11 vgg19; do
+for model in resnet34 vgg16; do
     eval " options[${ind}]=' --model ${model} ' "
     #echo ${options[${ind}]}
     let ind=$ind+1
