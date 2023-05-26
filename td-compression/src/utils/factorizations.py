@@ -81,7 +81,76 @@ def factorize_network(
 ):
     if model_name.startswith('resnet'):
         # layers to tensorize
-        layer_names = ['layer1.0.conv1', 'layer1.0.conv2', 'layer1.1.conv1', 'layer1.1.conv2', 'layer2.0.conv1', 'layer2.0.conv2', 'layer2.1.conv1', 'layer2.1.conv2', 'layer3.0.conv1', 'layer3.0.conv2', 'layer3.1.conv1', 'layer3.1.conv2', 'layer4.0.conv1', 'layer4.0.conv2', 'layer4.1.conv1', 'layer4.1.conv2']
+        if model_name == "resnet18":
+            layer_names = ['layer1.0.conv1', 'layer1.0.conv2', 'layer1.1.conv1', 'layer1.1.conv2', 'layer2.0.conv1', 'layer2.0.conv2', 'layer2.1.conv1', 'layer2.1.conv2', 'layer3.0.conv1', 'layer3.0.conv2', 'layer3.1.conv1', 'layer3.1.conv2', 'layer4.0.conv1', 'layer4.0.conv2', 'layer4.1.conv1', 'layer4.1.conv2']
+        elif model_name == "resnet50":
+            layer_names = [
+                "layer1.0.conv1",
+                "layer1.0.conv2",
+                "layer1.0.conv3",
+                "layer1.1.conv1",
+                "layer1.1.conv2",
+                "layer1.1.conv3",
+                "layer2.0.conv1",
+                "layer2.0.conv2",
+                "layer2.0.conv3",
+                "layer2.1.conv1",
+                "layer2.1.conv2",
+                "layer2.1.conv3",
+                "layer3.0.conv1",
+                "layer3.0.conv2",
+                "layer3.0.conv3",
+                "layer3.1.conv1",
+                "layer3.1.conv2",
+                "layer3.1.conv3",
+                "layer4.0.conv1",
+                "layer4.0.conv2",
+                "layer4.0.conv3",
+                "layer4.1.conv1",
+                "layer4.1.conv2",
+                "layer4.1.conv3",
+                "layer4.2.conv1",
+                "layer4.2.conv2",
+                "layer4.2.conv3",
+            ]
+        elif model_name == "resnet34":
+            layer_names = [
+                "layer1.0.conv1",
+                "layer1.0.conv2",
+                "layer1.1.conv1",
+                "layer1.1.conv2",
+                "layer1.2.conv1",
+                "layer1.2.conv2",
+                "layer2.0.conv1",
+                "layer2.0.conv2",
+                "layer2.1.conv1",
+                "layer2.1.conv2",
+                "layer2.2.conv1",
+                "layer2.2.conv2",
+                "layer2.3.conv1",
+                "layer2.3.conv2",
+                "layer3.0.conv1",
+                "layer3.0.conv2",
+                "layer3.1.conv1",
+                "layer3.1.conv2",
+                "layer3.2.conv1",
+                "layer3.2.conv2",
+                "layer3.3.conv1",
+                "layer3.3.conv2",
+                "layer3.4.conv1",
+                "layer3.4.conv2",
+                "layer3.5.conv1",
+                "layer3.5.conv2",
+                "layer4.0.conv1",
+                "layer4.0.conv2",
+                "layer4.1.conv1",
+                "layer4.1.conv2",
+                "layer4.2.conv1",
+                "layer4.2.conv2",
+            ]
+        else:
+            raise NotImplementedError('not recognized resnet model')
+
         fact_model = copy.deepcopy(model)
         # factorize resnet
         for i, (name, module) in enumerate(model.named_modules()):
