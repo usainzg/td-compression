@@ -160,4 +160,4 @@ if __name__ == "__main__":
     """trainer.save_checkpoint(
         os.path.join(args.out_dir, f"{log_name}.ckpt"), weights_only=True
     )"""
-    # torch.save(model.state_dict(), os.path.join(args.out_dir, f"{log_name}.pth"))
+    torch.save(model.state_dict(), os.path.join(args.out_dir, f"{log_name}.pth"))

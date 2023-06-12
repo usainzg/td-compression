@@ -51,6 +51,7 @@ def parse_args():
         help="rank selection",
     )
     parser.add_argument("--precision", type=int, default=32, help="precision")
+    parser.add_argument("--finetune", type=int, default=0, help="finetune")
     return parser.parse_args()
 
 def factorize_pretrained(model, tn_decomp, tn_rank, rank_selection):
@@ -65,18 +66,30 @@ def create_model(
 ):
     if model_name == "resnet18":
         model = resnet.ResNet18()
+        model.load_state_dict(torch.load(args.out_dir + "/resnet18.pth"))
     elif model_name == "resnet34":
         model = resnet.ResNet34()
+        model.load_state_dict(torch.load(args.out_dir + "/resnet34.pth"))
     elif model_name == "resnet50":
         model = resnet.ResNet50()
+        model.load_state_dict(torch.load(args.out_dir + "/resnet50.pth"))
     elif model_name == "vgg11":
         model = vgg.VGG("vgg11")
+        model.load_state_dict(torch.load(args.out_dir + "/vgg11.pth"))
     elif model_name == "vgg16":
         model = vgg.VGG("vgg16")
+        model.load_state_dict(torch.load(args.out_dir + "/vgg16.pth"))
     elif model_name == "vgg19":
         model = vgg.VGG("vgg19")
+        model.load_state_dict(torch.load(args.out_dir + "/vgg19.pth"))
     else:
         raise ValueError("Unknown model name: {}".format(model_name))
+
+    if args.finetune == 0:
+        model.eval()
+    else:
+        model.train()
+    
     return model
 
 
@@ -94,7 +107,6 @@ if __name__ == "__main__":
     print(args)
     # load pretrained model
     pretrained_model = create_model(args.model)
-    pretrained_model.load_state_dict(torch.load(args.pretrained_path))
     # count parameters of pretrained model
     n_params = utils.count_parameters(pretrained_model)
     print(f"Number of parameters (pretrained_model): {n_params}")
@@ -131,12 +143,15 @@ if __name__ == "__main__":
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
     # logger run name
-    if args.tn_decomp is None:
-        run_name = f"pre_{args.model}_{time.time()}"
+    if args.tn_decomp is not None:
+        log_name = f"{args.model}-{args.tn_decomp}-{args.tn_rank}-{time.time()}"
     else:
-        run_name = f"pre_{args.model}_{args.tn_decomp}_{args.tn_rank}_{time.time()}"
+        log_name = f"{args.model}-{time.time()}"
     # init logger
-    wandb_logger = pl_loggers.WandbLogger(name=run_name, project="td-compression")
+    wandb_logger = pl_loggers.WandbLogger(
+        name=log_name, project="td-compression", save_dir=args.log_dir
+    )
+    tensorboard_logger = pl_loggers.TensorBoardLogger(name=log_name, save_dir=f'{args.log_dir}/tensorboard')
     # log config
     config = {
         "model": args.model,
@@ -154,10 +169,12 @@ if __name__ == "__main__":
     wandb_logger.experiment.config.update(config)
     # init trainer
     trainer = pl.Trainer(
-        accelerator="gpu",
+        accelerator=args.accelerator,
         default_root_dir=args.log_dir,
-        logger=wandb_logger,
+        logger=[wandb_logger, tensorboard_logger],
         precision=args.precision,
+        enable_progress_bar=False,
+        enable_checkpointing=False
     )
     # TODO: add fine-tuning
     # test
