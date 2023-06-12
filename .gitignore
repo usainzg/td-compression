@@ -132,3 +132,5 @@ dmypy.json
 
 datasets/
 wandb/
+td-compression/src/pretrained.sh
+td-compression/src/p-tensorize.sh

@@ -21,9 +21,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train a model")
     parser.add_argument("--model", type=str, default="resnet18", help="model name")
     parser.add_argument("--batch-size", type=int, default=128, help="batch size")
-    parser.add_argument(
-        "--pretrained-path", type=str, default=None, help="path to pretrained model"
-    )
     parser.add_argument("--log-dir", type=str, default="logs", help="log directory")
     parser.add_argument(
         "--out-dir", type=str, default="output", help="output directory"
@@ -52,7 +49,9 @@ def parse_args():
     )
     parser.add_argument("--precision", type=int, default=32, help="precision")
     parser.add_argument("--finetune", type=int, default=0, help="finetune")
+    parser.add_argument("--accelerator", type=str, default="gpu", help="accelerator")
     return parser.parse_args()
+
 
 def factorize_pretrained(model, tn_decomp, tn_rank, rank_selection):
     if tn_decomp is not None:
@@ -61,27 +60,26 @@ def factorize_pretrained(model, tn_decomp, tn_rank, rank_selection):
         )
     return model
 
-def create_model(
-    model_name
-):
+
+def create_model(model_name):
     if model_name == "resnet18":
         model = resnet.ResNet18()
-        model.load_state_dict(torch.load(args.out_dir + "/resnet18.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/resnet18-pretrained.pth"))
     elif model_name == "resnet34":
         model = resnet.ResNet34()
-        model.load_state_dict(torch.load(args.out_dir + "/resnet34.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/resnet34-pretrained.pth"))
     elif model_name == "resnet50":
         model = resnet.ResNet50()
-        model.load_state_dict(torch.load(args.out_dir + "/resnet50.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/resnet50-pretrained.pth"))
     elif model_name == "vgg11":
         model = vgg.VGG("vgg11")
-        model.load_state_dict(torch.load(args.out_dir + "/vgg11.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/vgg11-pretrained.pth"))
     elif model_name == "vgg16":
         model = vgg.VGG("vgg16")
-        model.load_state_dict(torch.load(args.out_dir + "/vgg16.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/vgg16-pretrained.pth"))
     elif model_name == "vgg19":
         model = vgg.VGG("vgg19")
-        model.load_state_dict(torch.load(args.out_dir + "/vgg19.pth"))
+        model.load_state_dict(torch.load(args.out_dir + "/vgg19-pretrained.pth"))
     else:
         raise ValueError("Unknown model name: {}".format(model_name))
 
@@ -89,7 +87,7 @@ def create_model(
         model.eval()
     else:
         model.train()
-    
+
     return model
 
 
@@ -144,14 +142,16 @@ if __name__ == "__main__":
         os.makedirs(args.out_dir)
     # logger run name
     if args.tn_decomp is not None:
-        log_name = f"{args.model}-{args.tn_decomp}-{args.tn_rank}-{time.time()}"
+        log_name = f"p-{args.model}-{args.tn_decomp}-{args.tn_rank}-{time.time()}"
     else:
-        log_name = f"{args.model}-{time.time()}"
+        log_name = f"p-{args.model}-{time.time()}"
     # init logger
     wandb_logger = pl_loggers.WandbLogger(
         name=log_name, project="td-compression", save_dir=args.log_dir
     )
-    tensorboard_logger = pl_loggers.TensorBoardLogger(name=log_name, save_dir=f'{args.log_dir}/tensorboard')
+    tensorboard_logger = pl_loggers.TensorBoardLogger(
+        name=log_name, save_dir=f"{args.log_dir}/tensorboard"
+    )
     # log config
     config = {
         "model": args.model,
@@ -164,6 +164,9 @@ if __name__ == "__main__":
         "n_params": n_params,
         "precision": args.precision,
         "compression_ratio": compression_ratio if args.tn_decomp is not None else 1.0,
+        "model_size": n_params * 4 * 1e-6,
+        "fine_tune": args.finetune,
+        "pretrained": 1
     }
     # update run config
     wandb_logger.experiment.config.update(config)
@@ -174,7 +177,7 @@ if __name__ == "__main__":
         logger=[wandb_logger, tensorboard_logger],
         precision=args.precision,
         enable_progress_bar=False,
-        enable_checkpointing=False
+        enable_checkpointing=False,
     )
     # TODO: add fine-tuning
     # test
