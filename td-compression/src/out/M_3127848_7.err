@@ -1,0 +1,21 @@
+[rank: 0] Global seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/p-resnet18-tucker-0.5-1686645043.7785206
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [3]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | ResNet           | 5.7 M 
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+5.7 M     Trainable params
+0         Non-trainable params
+5.7 M     Total params
+22.761    Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [3]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: - 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: \ 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: | 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: / 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)wandb: - 0.006 MB of 0.006 MB uploaded (0.000 MB deduped)

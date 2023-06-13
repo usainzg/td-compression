@@ -175,6 +175,7 @@ if __name__ == "__main__":
         accelerator=args.accelerator,
         default_root_dir=args.log_dir,
         precision=args.precision,
+        logger=[tensorboard_logger, wandb_logger],
         enable_progress_bar=False,
         enable_checkpointing=False,
         max_epochs=50,

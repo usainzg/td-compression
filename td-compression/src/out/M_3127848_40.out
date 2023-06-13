@@ -1,0 +1,3 @@
+/pscratch/usainz/projects/tn-comp/td-compression/td-compression/src
+Executing the following command: pipenv run python3 run_finetune.py --model vgg11 --tn-decomp cp --tn-rank 0.8 --finetune 1 in directory /home/usainz/scratch/projects/tn-comp/td-compression/td-compression/src using the container --nv /opt/ohpc/pub/containers/CUDA112d.sif
+
