@@ -109,6 +109,7 @@ if __name__ == "__main__":
     print(f"Number of parameters (pretrained_model): {n_params}")
     # factorize pretrained model
     if args.tn_decomp is not None:
+        # TODO: remove not needed
         pretrained_model.eval()
         # factorize pretrained model
         pretrained_model = factorizations.factorize_network(
@@ -174,7 +175,7 @@ if __name__ == "__main__":
         accelerator=args.accelerator,
         default_root_dir=args.log_dir,
         precision=args.precision,
-        enable_progress_bar=True,
+        enable_progress_bar=False,
         enable_checkpointing=False,
         max_epochs=50,
         callbacks=[EarlyStopping(monitor="val_loss", mode='min')]
