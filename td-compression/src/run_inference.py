@@ -7,6 +7,7 @@ from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 import lightning.pytorch.loggers as pl_loggers
 from torchvision import models
 import torch
+import numpy as np
 
 from models import resnet, vgg
 from utils import factorizations, data, utils
@@ -88,6 +89,24 @@ def create_model(model_name):
 
     return model
 
+def timed(fn):
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()
+    result = fn()
+    end.record()
+    torch.cuda.synchronize()
+    return result, start.elapsed_time(end) / 1000
+
+def generate_data(b):
+    return (
+        torch.randn(b, 3, 32, 32).to(torch.float32).cuda(),
+        torch.randint(10, (b,)).cuda(),
+    )
+
+def evaluate(mod, inp):
+    return mod(inp)
+
 
 if __name__ == "__main__":
     NUM_WORKERS = 4
@@ -103,6 +122,7 @@ if __name__ == "__main__":
     print(args)
     # load pretrained model
     pretrained_model = create_model(args.model)
+    model = pretrained_model.cuda()
     # count parameters of pretrained model
     n_params = utils.count_parameters(pretrained_model)
     print(f"Number of parameters (pretrained_model): {n_params}")
@@ -126,6 +146,7 @@ if __name__ == "__main__":
         compression_ratio = n_params / n_params_fact
         print(f"Compression ratio: {compression_ratio}")
         n_params = n_params_fact  # to log n_params_fact
+    fact_model = pretrained_model.cuda()
     # init lightining module
     pl_module = model_module.Model(pretrained_model, init_lr=1e-5)
     # get and prepare data
@@ -169,7 +190,7 @@ if __name__ == "__main__":
     # update run config
     #wandb_logger.experiment.config.update(config)
     # init trainer
-    trainer = pl.Trainer(
+    """trainer = pl.Trainer(
         accelerator=args.accelerator,
         default_root_dir=args.log_dir,
         precision=args.precision,
@@ -185,4 +206,26 @@ if __name__ == "__main__":
     if args.finetune == 1:
         trainer.fit(pl_module, data_dict["train"], data_dict["val"])
     
-    trainer.test(pl_module, data_dict["test"])
+    trainer.test(pl_module, data_dict["test"])"""
+
+    N_ITERS = 10
+    model = model.cuda()
+    fact_model = fact_model.cuda()
+
+    model_times = []
+    fact_times = []
+    for i in range(N_ITERS):
+        inp = generate_data(args.batch_size)[0]
+        _, model_time = timed(lambda: evaluate(model, inp))
+        _, fact_time = timed(lambda: evaluate(fact_model, inp))
+        model_times.append(model_time)
+        fact_times.append(fact_time)
+        print(f"model eval time {i}: {model_time}")
+        print(f"fact model eval time {i}: {fact_time}")
+
+    print("~" * 10)
+    model_med = np.median(model_times)
+    fact_med = np.median(fact_times)
+    speedup = model_med / fact_med
+    print(f"(eval) model median: {model_med}, factorized model median: {fact_med}, speedup: {speedup}x")
+    print("~" * 10)
