@@ -1,0 +1,18 @@
+[rank: 0] Global seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/p-vgg11-tucker-0.8-1686648246.3589556
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [2]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | VGG              | 7.4 M 
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+7.4 M     Trainable params
+0         Non-trainable params
+7.4 M     Total params
+29.582    Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.

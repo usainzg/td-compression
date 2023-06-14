@@ -1,0 +1,6 @@
+[rank: 0] Global seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/p-vgg11-tt-0.1-1686648353.3531835

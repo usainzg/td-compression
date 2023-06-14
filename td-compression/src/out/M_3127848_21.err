@@ -1,0 +1,22 @@
+[rank: 0] Global seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+Missing logger folder: logs/tensorboard/p-resnet34-tt-0.1-1686645759.1501257
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name  | Type             | Params
+-------------------------------------------
+0 | model | ResNet           | 1.3 M 
+1 | loss  | CrossEntropyLoss | 0     
+-------------------------------------------
+1.3 M     Trainable params
+0         Non-trainable params
+1.3 M     Total params
+5.080     Total estimated model params size (MB)
+SLURM auto-requeueing enabled. Setting signal handlers.
+`Trainer.fit` stopped: `max_epochs=50` reached.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+wandb: - 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: \ 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: | 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: / 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: - 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)wandb: \ 0.005 MB of 0.005 MB uploaded (0.000 MB deduped)
